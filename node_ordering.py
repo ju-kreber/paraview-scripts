@@ -50,7 +50,7 @@ def number_triangle(corner_verts, order, skip=False):
     return np.concatenate([coords, number_triangle(np.array(corner_verts) + inc, order - 3, skip=False)], axis=0)
 
 
-def number_tetrahedron(corner_verts, order):    # currently only works up to 6th order; paraview 5.7.0 crashes on higher orders, but also with tetrahedra created by paraview sources -> not a problem of this code?
+def number_tetrahedron(corner_verts, order):
     """Outputs the list of coordinates of a right-angled tetrahedron of arbitrary order in the right ordering"""
     if order < 0:
         return np.ndarray((0, 3)) # empty
