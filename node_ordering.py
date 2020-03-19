@@ -41,13 +41,13 @@ def number_triangle(corner_verts, order, skip=False):
     for frm, to in edges:
         coords = np.concatenate([coords, n_verts_between(num_verts_on_edge, corner_verts[frm], corner_verts[to])], axis=0) if not skip else coords # do nothing if skip
     if order == 2:
-        # coords = np_array([coords[0], coords[3], coords[1], coords[5], coords[4], coords[2]]) # weird ordering for triangles in wedges <------------ !
+        # coords = np_array([coords[0], coords[3], coords[1], coords[5], coords[4], coords[2]]) # weird ordering for triangles in wedges, comment in only for testing 5th order wedge <----------
         return coords
     # third: face, use recursion
     e_x = (corner_verts[1] - corner_verts[0]) / order
     e_y = (corner_verts[2] - corner_verts[0]) / order
-    inc = np.array([e_x + e_y, -2*e_x + e_y, e_x -2*e_y])
-    return np.concatenate([coords, number_triangle(np.array(corner_verts) + inc, order - 3, skip=False)], axis=0)
+    inc = np.array([e_x + e_y, -2*e_x + e_y, e_x -2*e_y]) # adjust corner vertices for recursion
+    return np.concatenate([coords, number_triangle(np.array(corner_verts) + inc, order - 3, skip=False)], axis=0) # recursive call, decrease order
 
 
 def number_tetrahedron(corner_verts, order):
@@ -72,18 +72,18 @@ def number_tetrahedron(corner_verts, order):
     # third: faces, use triangle numbering method
     faces = [(0,1,3), (2,3,1), (0,3,2), (0,2,1)]  # x-z, top, y-z, x-y (CCW)  TODO: not as in documentation, beware of future changes!!
     for v_x, v_y, v_z in faces:
-        coords = np.concatenate([coords, number_triangle([corner_verts[v_x], corner_verts[v_y], corner_verts[v_z]], order, skip=True)], axis=0)
+        coords = np.concatenate([coords, number_triangle([corner_verts[v_x], corner_verts[v_y], corner_verts[v_z]], order, skip=True)], axis=0) # use number_triangle to number face, but skip corners and edges
     if order == 3:
         return coords
     # fourth: volume, use recursion
     e_x = (corner_verts[1] - corner_verts[0]) / order
     e_y = (corner_verts[2] - corner_verts[0]) / order
     e_z = (corner_verts[3] - corner_verts[0]) / order
-    inc = np.array([e_x + e_y + e_z, -3*e_x + e_y + e_z, e_x -3*e_y + e_z, e_x + e_y -3*e_z])
-    return np.concatenate([coords, number_tetrahedron(np.array(corner_verts) + inc, order - 4)], axis=0)
+    inc = np.array([e_x + e_y + e_z, -3*e_x + e_y + e_z, e_x -3*e_y + e_z, e_x + e_y -3*e_z]) # adjust corner vertices for recursion
+    return np.concatenate([coords, number_tetrahedron(np.array(corner_verts) + inc, order - 4)], axis=0) # recursive call, decrease order
 
 
-def number_quadrilateral(corner_verts, order, skip=[]):
+def number_quadrilateral(corner_verts, order, skip=False):
     """Outputs the list of coordinates of a right-angled quadrilateral of arbitrary order in the right ordering"""
     # first: corner vertices
     coords = np_array(corner_verts) if not skip else np.ndarray((0, 3)) # empty if skip
@@ -119,7 +119,7 @@ def number_hexahedron(corner_verts, order):
     faces = [(0,3,7,4), (1,2,6,5), (0,1,5,4), (3,2,6,7), (0,1,2,3), (4,5,6,7)] # TODO: not as in documentation, beware of future changes!!
     for indices in faces:
         sub_corner_verts = [corner_verts[q] for q in indices]
-        face_coords = number_quadrilateral(np_array(sub_corner_verts), order, skip=True)
+        face_coords = number_quadrilateral(np_array(sub_corner_verts), order, skip=True) # use number_quadrilateral to number face, but skip cornes and edges
         coords = np.concatenate([coords, face_coords], axis=0)
     # fourth: interior
     e_x = (corner_verts[1] - corner_verts[0]) / order
@@ -152,9 +152,9 @@ def number_wedge(corner_verts, order): # currently only works up to 4th order, e
     triangular_faces = [(0,1,2), (3,4,5)]
     quadrilateral_faces = [(0,1,4,3), (1,2,5,4), (0,2,5,3)]
     for indices in triangular_faces:
-        coords = np.concatenate([coords, number_triangle(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0)
+        coords = np.concatenate([coords, number_triangle(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0) # use number_triangle to number face, but skip corners and edges
     for indices in quadrilateral_faces:
-        coords = np.concatenate([coords, number_quadrilateral(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0)
+        coords = np.concatenate([coords, number_quadrilateral(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0) # use number_quadrilateral to number face, but skip corners and edges
     # fourth: interior
     e_z = (corner_verts[3] - corner_verts[0]) / order
     pos_z = corner_verts[0].copy()
