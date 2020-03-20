@@ -46,7 +46,6 @@ def number_triangle(corner_verts, order, skip=False):
     for frm, to in edges:
         coords = np.concatenate([coords, n_verts_between(num_verts_on_edge, corner_verts[frm], corner_verts[to])], axis=0) if not skip else coords # do nothing if skip
     if order == 2:
-        # coords = np_array([coords[0], coords[3], coords[1], coords[5], coords[4], coords[2]]) # weird ordering for triangles in wedges, comment in only for testing 5th order wedge <----------
         return coords
     # third: face, use recursion
     e_x = (corner_verts[1] - corner_verts[0]) / order
