@@ -22,6 +22,11 @@ def n_verts_between(n, frm, to):
         ), axis=1)
     return edge_verts[1:] # remove start point
 
+def sort_by_axes(coords):
+    coords = coords.round(12) # TODO required to some extent to get sorting right, better way to do this?
+    reordering = np.lexsort((coords[:,0], coords[:,1], coords[:,2]))
+    return coords[reordering, :]
+
 
 def number_triangle(corner_verts, order, skip=False):
     """Outputs the list of coordinates of a right-angled triangle of arbitrary order in the right ordering"""
@@ -152,7 +157,9 @@ def number_wedge(corner_verts, order): # currently only works up to 4th order, e
     triangular_faces = [(0,1,2), (3,4,5)]
     quadrilateral_faces = [(0,1,4,3), (1,2,5,4), (0,2,5,3)]
     for indices in triangular_faces:
-        coords = np.concatenate([coords, number_triangle(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0) # use number_triangle to number face, but skip corners and edges
+        face_coords = number_triangle(np_array([corner_verts[q] for q in indices]), order, skip=True)  # use number_triangle to number face, but skip corners and edges
+        face_coords = sort_by_axes(face_coords) # ! face points on triangles are not reported like normal triangles, but in axis order. Only on wedges !
+        coords = np.concatenate([coords, face_coords], axis=0)
     for indices in quadrilateral_faces:
         coords = np.concatenate([coords, number_quadrilateral(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0) # use number_quadrilateral to number face, but skip corners and edges
     # fourth: interior
@@ -162,7 +169,9 @@ def number_wedge(corner_verts, order): # currently only works up to 4th order, e
     for _ in range(num_verts_on_edge):
         pos_z += e_z
         interior_triag_corner_verts = np_array([corner_verts[0], corner_verts[1], corner_verts[2]]) + pos_z
-        coords = np.concatenate([coords, number_triangle(interior_triag_corner_verts, order, skip=True)], axis=0)
+        face_coords = number_triangle(interior_triag_corner_verts, order, skip=True) # use number_triangle to number face, but skip corners and edges
+        face_coords = sort_by_axes(face_coords) # ! face points on triangles are not reported like normal triangles, but in axis order. Only on wedges !
+        coords = np.concatenate([coords, face_coords], axis=0)
     return coords
 
 

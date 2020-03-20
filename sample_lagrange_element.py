@@ -4,23 +4,33 @@
 # for the Chair for Electromagnetic Theory at Saarland University (https://www.uni-saarland.de/lehrstuhl/dyczij-edlinger.html)
 
 # pylint: disable=line-too-long, no-member, unsubscriptable-object
-"""Generate a sample Lagrange element file to check on vertex ordering. Change the code on the indicated lines for desired element type and order"""
+"""Generate a sample Lagrange element file to check on vertex ordering. Change the code on the indicated lines for desired element type and order or specify them as arguments"""
 
 
 import warnings
+import sys
 import numpy as np
 import vtk
 import vtk.util.numpy_support as vnp
 from node_ordering import node_ordering
 
+VTK_CELLTYPES = {'triangle': vtk.VTK_LAGRANGE_TRIANGLE, 'tetrahedron': vtk.VTK_LAGRANGE_TETRAHEDRON, 'quadrilateral': vtk.VTK_LAGRANGE_QUADRILATERAL, 'hexahedron': vtk.VTK_LAGRANGE_HEXAHEDRON, 'wedge': vtk.VTK_LAGRANGE_WEDGE}
+
 if __name__ == "__main__":
     warnings.simplefilter(action='ignore', category=FutureWarning) # TODO: check for fixed version of vtk
 
 ### change to desired element here
-    points = node_ordering('wedge', 5)      # type, order       <--------------------------------------------
-    element_type = vtk.VTK_LAGRANGE_WEDGE   # vtk code          <--------------------------------------------
+    element_type = 'wedge'              # <------------------------ one of 'triangle', 'quadrilateral', 'tetrahedron', 'hexahedron', 'wedge'
+    element_order = 5                   # <------------------------ 1 to 10
 ###
 
+    if len(sys.argv) == 3 and sys.argv[1] in VTK_CELLTYPES.keys() and int(sys.argv[2]) in range(1,11):
+        element_type = sys.argv[1]
+        element_order = int(sys.argv[2])
+    elif len(sys.argv) != 1:
+        sys.exit("Usage: " + sys.argv[0] + " [ELEMENT_TYPE ELEMENT_ORDER]")
+
+    points = node_ordering(element_type, element_order)
     points_vtk_data = vnp.numpy_to_vtk(points)
     points_vtk = vtk.vtkPoints()
     points_vtk.SetData(points_vtk_data)
@@ -38,7 +48,7 @@ if __name__ == "__main__":
 
     ugrid = vtk.vtkUnstructuredGrid()
     ugrid.SetPoints(points_vtk)
-    ugrid.SetCells(element_type, cells)
+    ugrid.SetCells(VTK_CELLTYPES[element_type], cells)
     pointdata_container = ugrid.GetPointData()
     pointdata_container.SetScalars(pointdata_vtk)
 
