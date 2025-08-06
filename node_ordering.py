@@ -240,10 +240,13 @@ def number_hexahedron(corner_verts, order):
         (4, 7),
         (0, 4),
         (1, 5),
-        TODO: not as in documentation, beware of future changes!!
-        (3, 7),
+        # Original
+        # TODO: not as in documentation, beware of future changes!!
+        # (3, 7),
+        # (2, 6),
+        # VTU-working
         (2, 6),
-
+        (3, 7),
     ]
     for frm, to in edges:
         coords = np.concatenate(
