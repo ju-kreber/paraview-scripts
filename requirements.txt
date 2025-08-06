@@ -1,0 +1,10 @@
+# Core dependencies
+numpy>=1.20.0
+vtk>=9.0.0
+matplotlib>=3.5.0
+
+# Optional: For development and testing
+pytest>=6.0.0
+black>=21.0.0
+flake8>=4.0.0
+mypy>=0.900
