@@ -28,9 +28,9 @@ VTK_CELLTYPES = {
 # %%
 # Change to desired element here
 element_type = "hexahedron"
-element_order = 2
+element_order = 3
 
-assert (element_type, element_order) in VTK_CELLTYPES.items()
+assert (element_type) in VTK_CELLTYPES.keys()
 assert element_order in range(1, 11), "Element order must be between 1 and 10"
 
 # %%
