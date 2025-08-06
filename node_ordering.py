@@ -328,7 +328,7 @@ def number_wedge(corner_verts, order):
         )
     # third: faces
     triangular_faces = [(0, 1, 2), (3, 4, 5)]
-    quadrilateral_faces = [(0, 1, 4, 3), (1, 2, 5, 4), (0, 2, 5, 3)]
+    quadrilateral_faces = [(0, 1, 4, 3), (1, 2, 5, 4), (2, 0, 3, 5)]
     for indices in triangular_faces:
         # Use number_triangle to number face, but skip corners and edges
         face_coords = number_triangle(
