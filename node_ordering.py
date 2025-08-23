@@ -116,7 +116,7 @@ def number_hexahedron(corner_verts, order):
     coords = np_array(corner_verts)
     # second: edges
     num_verts_on_edge = order - 1
-    edges = [(0,1), (1,2), (3,2), (0,3), (4,5), (5,6), (7,6), (4,7), (0,4), (1,5), (3,7), (2,6)] # TODO: not as in documentation, beware of future changes!!
+    edges = [(0,1), (1,2), (3,2), (0,3), (4,5), (5,6), (7,6), (4,7), (0,4), (1,5), (2,6), (3,7)] # swapped last two for VTK update
     for frm, to in edges:
         coords = np.concatenate([coords, n_verts_between(num_verts_on_edge, corner_verts[frm], corner_verts[to])], axis=0)
     # third: faces
@@ -154,7 +154,7 @@ def number_wedge(corner_verts, order): # currently only works up to 4th order, e
         coords = np.concatenate([coords, n_verts_between(num_verts_on_edge, corner_verts[frm], corner_verts[to])], axis=0)
     # third: faces
     triangular_faces = [(0,1,2), (3,4,5)]
-    quadrilateral_faces = [(0,1,4,3), (1,2,5,4), (0,2,5,3)]
+    quadrilateral_faces = [(0,1,4,3), (1,2,5,4), (2,0,3,5)]
     for indices in triangular_faces:
         face_coords = number_triangle(np_array([corner_verts[q] for q in indices]), order, skip=True)  # use number_triangle to number face, but skip corners and edges
         face_coords = sort_by_axes(face_coords) # ! face points on triangles are not reported like normal triangles, but in axis order. Only on wedges !
