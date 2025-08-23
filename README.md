@@ -1,3 +1,7 @@
+**Note:** This repository is not actively maintained. Check out this fork: https://github.com/larsgeb/vtk-higher-order
+
+<br />
+
 # paraview-scripts
 Collection of python scripts for interfacing with ParaView and/or VTK. Written for the Chair for Electromagnetic Theory at Saarland University.
 
