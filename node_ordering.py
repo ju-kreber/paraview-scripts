@@ -163,8 +163,7 @@ def number_wedge(corner_verts, order): # currently only works up to 4th order, e
         coords = np.concatenate([coords, number_quadrilateral(np_array([corner_verts[q] for q in indices]), order, skip=True)], axis=0) # use number_quadrilateral to number face, but skip corners and edges
     # fourth: interior
     e_z = (corner_verts[3] - corner_verts[0]) / order
-    pos_z = corner_verts[0].copy()
-    pos_z = np.expand_dims(pos_z, axis=0)
+    pos_z = np.zeros_like(corner_verts[None, 0]) # shape (1,3)
     for _ in range(num_verts_on_edge):
         pos_z += e_z
         interior_triag_corner_verts = np_array([corner_verts[0], corner_verts[1], corner_verts[2]]) + pos_z
