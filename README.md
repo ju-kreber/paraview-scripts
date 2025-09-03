@@ -7,7 +7,7 @@ Collection of python scripts for interfacing with ParaView and/or VTK. Written f
 
 
 ## Requirements
-Some up-to-date Python 3 version. Tested with Python 3.6.
+Some up-to-date Python 3 version. Tested with Python 3.12.
 All scripts need the `numpy` package. Those creating VTK files also need the `vtk` package.
 
 ## File purposes
